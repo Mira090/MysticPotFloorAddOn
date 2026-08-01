@@ -81,7 +81,7 @@ namespace MysticPotFloor
                             ModifyStageDesert(choice);
                     }
                 }
-            });*/
+            });
             Modify(27, race =>//チャプター5
             {
                 foreach (var stage in race.stages)
@@ -95,7 +95,29 @@ namespace MysticPotFloor
                             ModifyStageDeepCave(choice);
                     }
                 }
+            });*/
+            Modify(30, race =>//チャプター6クリア後
+            {
+                foreach (var stage in race.stages)
+                {
+                    if (stage is StageEntity_Choice choice)
+                    {
+                        //Core.Logger("Stage: " + stage.id);
+                        if (stage.id == "Stage_Desert_Chapter2")
+                            ModifyStageDesert(choice);
+                        if (stage.id == "Stage_DeepCave")
+                            ModifyStageDeepCave(choice);
+                    }
+                }
             });
+            foreach (var item in RaceDatabase.GetAll())
+            {
+                Core.Logger("Race: " + item.id + " - " + item.name);
+                foreach(var stage in item.stages)
+                {
+                    Core.Logger("  Stage: " + stage.id + " - " + stage.name);
+                }
+            }
         }
         private void ModifyStageDesert(StageEntity_Choice choice)
         {
@@ -136,11 +158,13 @@ namespace MysticPotFloor
         }
         private void ModifyStageDeepCave(StageEntity_Choice choice)
         {
+            Core.Logger("ModifyStageEntity: " + choice.id);
             for (int q = 0; q < choice.unknownNormalEvents.Length; q++)
             {
                 if (choice.unknownNormalEvents[q] == EFloorMainEventType.Dice)
                 {
                     choice.unknownNormalEvents[q] = (EFloorMainEventType)ECustomFloorMainEventType.MysticPot;
+                    Core.Logger("Changed 1");
                 }
             }
             foreach (var step in choice.steps)
@@ -150,9 +174,11 @@ namespace MysticPotFloor
                     if (step.possibleMainEvents[q] == EFloorMainEventType.Dice)
                     {
                         step.possibleMainEvents[q] = (EFloorMainEventType)ECustomFloorMainEventType.MysticPot;
+                        Core.Logger("Changed 2");
                     }
                 }
             }
+            Core.Logger("ModifyStageEntity: Completed");
         }
 
         public static void Modify(int id, Action<RaceEntity> modifier)
